@@ -13,7 +13,7 @@ city = str(input("Enter city"))
 try:
 
     url = f"{BASE_URL}?q={city}&appid={API_KEY}&units=metric"
-    print(url)
+    
     response = requests.get(url)
     
 
