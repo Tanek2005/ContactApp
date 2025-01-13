@@ -2,27 +2,33 @@ import csv
 import os
 import pandas as pd
 
+#############################################################################################
 header = ['name', 'phone_no', 'email']
+#############################################################################################
 
+
+#############################################################################################
 def searchbyname(file_name):
     name = input("Enter the name of contact for info: ")
     try:
         with open(file_name, mode='r', newline='') as file:
             reader = csv.reader(file)
             next(reader)
-            found = False
+            
             for row in reader:
                 if row[0].strip().lower() == name.strip().lower():
-                    print("Contact found:", row)
-                    found = True
+                    print(f"Contact found:\n Name :{row[0]}\t PhoneNo :{row[1]} Email: {row[2]}")
+                    
                     break
-            if not found:
-                print("No such contact exists.")
-    except FileNotFoundError:
-        print(f"File '{file_name}' does not exist.")
+                else:
+                    continue
     except Exception as e:
-        print("Error while searching contact:", e)
+        print(f"No file found of the name {file_name}",e)
+#############################################################################################
 
+
+
+#############################################################################################
 def Choice_file():
     while True:
         c = int(input("Enter choice 1.CreateFile 2.DeleteFile (or any other key to exit): "))
@@ -47,7 +53,10 @@ def Choice_file():
                 print("Error while deleting file:", e)
         else:
             break
+#############################################################################################
 
+
+#############################################################################################
 def Choice_Contact():
     file_name = input("Enter file name: ")
     while True:
@@ -100,7 +109,10 @@ def Choice_Contact():
             searchbyname(file_name)
         else:
             break
+#############################################################################################
 
+
+#############################################################################################
 def program():
     while True:
         i = int(input("Enter choice 1.Choice_File 2.Contact_File (or any other key to exit): "))
@@ -114,3 +126,4 @@ def program():
 
 if __name__ == "__main__":
     program()
+#############################################################################################
