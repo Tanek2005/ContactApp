@@ -25,7 +25,21 @@ def searchbyname(file_name):
     except Exception as e:
         print(f"No file found of the name {file_name}",e)
 #############################################################################################
-
+def UpdateFile(file_name):
+    try:
+                with open(file_name, mode='w', newline='') as file:
+                    writer = csv.writer(file)
+                    if file.tell() == 0:
+                        writer.writerow(header)
+                    name = input("Enter name: ")
+                    phone_no = input("Enter phone number: ")
+                    email = input("Enter email: ")
+                    writer.writerow([name, phone_no, email])
+                    print("Contact added successfully.")
+    except FileNotFoundError:
+                print(f"File '{file_name}' does not exist. Please create it first.")
+    except Exception as e:
+                print("Error while adding contact:", e)
 
 
 #############################################################################################
@@ -54,13 +68,10 @@ def Choice_file():
         else:
             break
 #############################################################################################
-
-
-#############################################################################################
-def Choice_Contact():
+def Add_contact():
     file_name = input("Enter file name: ")
-    while True:
-        c = int(input("Enter choice 1.CreateContact 2.DeleteContact 3.ReadContact 4.SearchContact (or any other key to exit): "))
+    while c==1:
+        c = int(input("Enter choice 1.CreateContact 2. (or any other key to exit): "))
         if c == 1:
             try:
                 with open(file_name, mode='a', newline='') as file:
@@ -76,8 +87,12 @@ def Choice_Contact():
                 print(f"File '{file_name}' does not exist. Please create it first.")
             except Exception as e:
                 print("Error while adding contact:", e)
-        elif c == 2:
-            try:
+
+#############################################################################################
+def Delete_Contact():
+    file_name = input("Enter file name: ")
+
+    try:
                 rows = []
                 name = input("Enter the name of the contact you want to delete: ")
                 with open(file_name, mode='r', newline='') as file:
@@ -93,33 +108,36 @@ def Choice_Contact():
                         writer.writerow(header)
                         writer.writerows(updated_data)
                     print("Contact deleted successfully.")
-            except FileNotFoundError:
+    except FileNotFoundError:
                 print(f"File '{file_name}' does not exist.")
-            except Exception as e:
+    except Exception as e:
                 print("Error while deleting contact:", e)
-        elif c == 3:
-            try:
-                df = pd.read_csv(file_name)
-                print(df)
-            except FileNotFoundError:
-                print(f"File '{file_name}' does not exist.")
-            except Exception as e:
-                print("Error while reading the file:", e)
-        elif c == 4:
-            searchbyname(file_name)
-        else:
-            break
+        
+    
 #############################################################################################
-
+def Read_file():
+    file_name = input("Enter file name : ")
+    try:
+        df = pd.read_csv(file_name)
+        print(df)
+    except FileNotFoundError:
+        print(f"File '{file_name}' does not exist.")
+    except Exception as e:
+                print("Error while reading the file:", e)
 
 #############################################################################################
 def program():
     while True:
-        i = int(input("Enter choice 1.Choice_File 2.Contact_File (or any other key to exit): "))
+        i = int(input("Enter choice 1.Addcontact 2.DeleteContact 3.UpdateContact (Or any other key to exit ): "))
+      
         if i == 1:
-            Choice_file()
-        elif i == 2:
-            Choice_Contact()
+            Add_contact()
+        elif i==2:
+             Delete_Contact()
+        
+        elif i==3:
+            file_name=input("!!!This will overwrite the original file contents\n Enter file you want to update :  ")
+            UpdateFile(file_name)
         else:
             print("Exiting program.")
             break
