@@ -37,7 +37,10 @@ def UpdateFile(file_name):
                     writer.writerow([name, phone_no, email])
                     print("Contact added successfully.")
     except FileNotFoundError:
-                print(f"File '{file_name}' does not exist. Please create it first.")
+                 with open(file_name, mode='w', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(header)
+
     except Exception as e:
                 print("Error while adding contact:", e)
 
@@ -128,7 +131,7 @@ def Read_file():
 #############################################################################################
 def program():
     while True:
-        i = int(input("Enter choice 1.Addcontact 2.DeleteContact 3.UpdateContact (Or any other key to exit ): "))
+        i = int(input("Enter choice 1.Addcontact 2.DeleteContact 3.UpdateFile (Or any other key to exit ): "))
       
         if i == 1:
             Add_contact()
