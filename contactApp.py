@@ -5,77 +5,74 @@ import pandas as pd
 #############################################################################################
 header = ['name', 'phone_no', 'email']
 #############################################################################################
+def createFile(fileName):
+
+    with open(fileName,mode='w',newline='') as file:
+        writer=csv.writer(file)
+    
 
 
 #############################################################################################
-def searchbyname(file_name):
-    name = input("Enter the name of contact for info: ")
+def searchbyName(contactName):
+    
     try:
-        with open(file_name, mode='r', newline='') as file:
+        with open(contactName, mode='r', newline='') as file:
             reader = csv.reader(file)
             next(reader)
             
             for row in reader:
-                if row[0].strip().lower() == name.strip().lower():
+                if row[0].strip().lower() == contactName.strip().lower():
                     print(f"Contact found:\n Name :{row[0]}\t PhoneNo :{row[1]} Email: {row[2]}")
                     
                     break
                 else:
                     continue
     except Exception as e:
-        print(f"No file found of the name {file_name}",e)
+        print(f"No file found of the name {contactName}",e)
 #############################################################################################
-def UpdateFile(file_name):
+
+
+def updateContact(contactName, fileName):
     try:
-                with open(file_name, mode='w', newline='') as file:
-                    writer = csv.writer(file)
-                    if file.tell() == 0:
-                        writer.writerow(header)
-                    name = input("Enter name: ")
-                    phone_no = input("Enter phone number: ")
-                    email = input("Enter email: ")
-                    writer.writerow([name, phone_no, email])
-                    print("Contact added successfully.")
-    except FileNotFoundError:
-                 with open(file_name, mode='w', newline='') as file:
-                    writer = csv.writer(file)
-                    writer.writerow(header)
+        
+        with open(fileName, mode='r', newline='') as infile:
+            reader = csv.reader(infile)
+            rows = list(reader)  
 
-    except Exception as e:
-                print("Error while adding contact:", e)
+        
+        for row in rows:
+            if row[0].strip().lower() == contactName.strip().lower():
+                newName = input("Enter new name: ")
+                newPhone = input("Enter new phone number: ")
+                newEmail = input("Enter new email: ")
 
-
-#############################################################################################
-def Choice_file():
-    while True:
-        c = int(input("Enter choice 1.CreateFile 2.DeleteFile (or any other key to exit): "))
-        if c == 1:
-            try:
-                file_name = input("Enter file name: ")
-                with open(file_name, mode='w', newline='') as file:
-                    writer = csv.writer(file)
-                    writer.writerow(header)
-                print(f"File '{file_name}' created successfully.")
-            except Exception as e:
-                print("Trouble creating file:", e)
-        elif c == 2:
-            try:
-                filename = input("Enter file you want to delete: ")
-                if os.path.exists(filename):
-                    os.remove(filename)
-                    print(f"File '{filename}' deleted successfully.")
-                else:
-                    print(f"No such file: '{filename}'")
-            except Exception as e:
-                print("Error while deleting file:", e)
+                
+                row[0] = newName
+                row[1] = newPhone
+                row[2] = newEmail
+                break
         else:
-            break
+            print(f"No contact found with the name '{contactName}'.")
+            return
+
+        
+        with open(fileName, mode='w', newline='') as outfile:
+            writer = csv.writer(outfile)
+            writer.writerows(rows)
+
+        print(f"Contact '{contactName}' updated successfully.")
+    
+    except FileNotFoundError:
+        print(f"File '{fileName}' not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
 #############################################################################################
-def Add_contact():
+
+def addContact():
     file_name = input("Enter file name: ")
-    while c==1:
-        c = int(input("Enter choice 1.CreateContact 2. (or any other key to exit): "))
-        if c == 1:
+    c = int(input("Enter choice 1.CreateContact 2. (or any other key to exit): "))
+    if c == 1:
             try:
                 with open(file_name, mode='a', newline='') as file:
                     writer = csv.writer(file)
@@ -92,13 +89,13 @@ def Add_contact():
                 print("Error while adding contact:", e)
 
 #############################################################################################
-def Delete_Contact():
-    file_name = input("Enter file name: ")
+def deleteContact(fileName):
+    
 
     try:
                 rows = []
                 name = input("Enter the name of the contact you want to delete: ")
-                with open(file_name, mode='r', newline='') as file:
+                with open(fileName, mode='r', newline='') as file:
                     reader = csv.reader(file)
                     rows = [row for row in reader]
                 header, data = rows[0], rows[1:]
@@ -106,41 +103,50 @@ def Delete_Contact():
                 if len(data) == len(updated_data):
                     print("Contact not found.")
                 else:
-                    with open(file_name, mode='w', newline='') as file:
+                    with open(fileName, mode='w', newline='') as file:
                         writer = csv.writer(file)
                         writer.writerow(header)
                         writer.writerows(updated_data)
                     print("Contact deleted successfully.")
     except FileNotFoundError:
-                print(f"File '{file_name}' does not exist.")
+                print(f"File '{fileName}' does not exist.")
     except Exception as e:
                 print("Error while deleting contact:", e)
         
     
 #############################################################################################
-def Read_file():
-    file_name = input("Enter file name : ")
+def readFile():
+    fileName = input("Enter file name : ")
     try:
-        df = pd.read_csv(file_name)
+        df = pd.read_csv(fileName)
         print(df)
     except FileNotFoundError:
-        print(f"File '{file_name}' does not exist.")
+        print(f"File '{fileName}' does not exist.")
     except Exception as e:
                 print("Error while reading the file:", e)
 
 #############################################################################################
 def program():
     while True:
-        i = int(input("Enter choice 1.Addcontact 2.DeleteContact 3.UpdateFile (Or any other key to exit ): "))
+        i = int(input("Enter choice 1.AddContact 2.DeleteContact 3.UpdateContact 4.searchContact 5.createFile : "))
       
         if i == 1:
-            Add_contact()
+            addContact()
         elif i==2:
-             Delete_Contact()
+             fileName = input("Enter file name: ")
+             deleteContact(fileName)
         
         elif i==3:
-            file_name=input("!!!This will overwrite the original file contents\n Enter file you want to update :  ")
-            UpdateFile(file_name)
+             fileName=input("Enter filename : ")
+             contactName=input("Enter contact name : ")
+             updateContact(contactName,fileName)
+
+        elif i==4:
+            name = input("Enter the name of contact for info: ")
+            searchbyName(name)
+        elif i==5:
+            fileName=input("Enter file name : ")
+            createFile(fileName)
         else:
             print("Exiting program.")
             break
