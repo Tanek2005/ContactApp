@@ -2,33 +2,31 @@ import csv
 import os
 import pandas as pd
 
+fileName='fileName.csv'
+
 #############################################################################################
 header = ['name', 'phone_no', 'email']
 #############################################################################################
-def createFile(fileName):
-
-    with open(fileName,mode='w',newline='') as file:
-        writer=csv.writer(file)
     
 
 
 #############################################################################################
-def searchbyName(contactName):
+def searchbyName(fileName):
     
     try:
-        with open(contactName, mode='r', newline='') as file:
+        with open(fileName, mode='r', newline='') as file:
             reader = csv.reader(file)
             next(reader)
             
             for row in reader:
-                if row[0].strip().lower() == contactName.strip().lower():
+                if row[0].strip().lower() == fileName.strip().lower():
                     print(f"Contact found:\n Name :{row[0]}\t PhoneNo :{row[1]} Email: {row[2]}")
                     
                     break
                 else:
                     continue
     except Exception as e:
-        print(f"No file found of the name {contactName}",e)
+        print(f"No file found of the name {fileName}",e)
 #############################################################################################
 
 
@@ -43,13 +41,15 @@ def updateContact(contactName, fileName):
         for row in rows:
             if row[0].strip().lower() == contactName.strip().lower():
                 newName = input("Enter new name: ")
+                if newName!="":
+                     row[0]=newName     
                 newPhone = input("Enter new phone number: ")
+                if newPhone!="":
+                     row[1]=newPhone
                 newEmail = input("Enter new email: ")
-
+                if newEmail!="":
+                     row[2]=newEmail
                 
-                row[0] = newName
-                row[1] = newPhone
-                row[2] = newEmail
                 break
         else:
             print(f"No contact found with the name '{contactName}'.")
@@ -70,11 +70,11 @@ def updateContact(contactName, fileName):
 #############################################################################################
 
 def addContact():
-    file_name = input("Enter file name: ")
+ 
     c = int(input("Enter choice 1.CreateContact 2. (or any other key to exit): "))
     if c == 1:
             try:
-                with open(file_name, mode='a', newline='') as file:
+                with open(fileName, mode='a', newline='') as file:
                     writer = csv.writer(file)
                     if file.tell() == 0:
                         writer.writerow(header)
@@ -84,7 +84,7 @@ def addContact():
                     writer.writerow([name, phone_no, email])
                     print("Contact added successfully.")
             except FileNotFoundError:
-                print(f"File '{file_name}' does not exist. Please create it first.")
+                print(f"File '{fileName}' does not exist. Please create it first.")
             except Exception as e:
                 print("Error while adding contact:", e)
 
@@ -116,7 +116,6 @@ def deleteContact(fileName):
     
 #############################################################################################
 def readFile():
-    fileName = input("Enter file name : ")
     try:
         df = pd.read_csv(fileName)
         print(df)
@@ -128,28 +127,23 @@ def readFile():
 #############################################################################################
 def program():
     while True:
-        i = int(input("Enter choice 1.AddContact 2.DeleteContact 3.UpdateContact 4.searchContact 5.createFile : "))
+        i = eval(input("Enter choice 1.AddContact 2.DeleteContact 3.UpdateContact (or any other number to exit) : "))
       
         if i == 1:
             addContact()
         elif i==2:
-             fileName = input("Enter file name: ")
+             
              deleteContact(fileName)
         
         elif i==3:
-             fileName=input("Enter filename : ")
+ 
              contactName=input("Enter contact name : ")
              updateContact(contactName,fileName)
 
-        elif i==4:
-            name = input("Enter the name of contact for info: ")
-            searchbyName(name)
-        elif i==5:
-            fileName=input("Enter file name : ")
-            createFile(fileName)
         else:
             print("Exiting program.")
             break
+
 
 if __name__ == "__main__":
     program()
